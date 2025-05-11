@@ -1,10 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2 } from 'lucide-react';
+import { Song } from '../types';
 
-export function MusicPlayer({ currentSong }) {
+interface MusicPlayerProps {
+  currentSong: Song | null;
+}
+
+export function MusicPlayer({ currentSong }: MusicPlayerProps): JSX.Element | null {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -17,7 +22,7 @@ export function MusicPlayer({ currentSong }) {
     }
   };
 
-  const formatTime = (time) => {
+  const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
@@ -59,12 +64,13 @@ export function MusicPlayer({ currentSong }) {
               <SkipForward className="w-5 h-5" />
             </button>
           </div>
-          
+
+          {/* 🔴 Updated Progress Bar Section */}
           <div className="w-full flex items-center space-x-3 mt-2">
             <span className="text-xs text-gray-500">{formatTime(progress)}</span>
             <div className="flex-1 h-1 bg-gray-200 rounded-full">
               <div
-                className="h-1 bg-indigo-600 rounded-full"
+                className={`h-1 rounded-full ${isPlaying ? 'bg-red-600' : 'bg-gray-400'}`}
                 style={{ width: `${(progress / currentSong.duration) * 100}%` }}
               />
             </div>
